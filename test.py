@@ -22,7 +22,7 @@ gamma = 1.4
 # print(c_roe_2d(uL, uL, n, gamma))
 # print(np.matmul(c_flux_function_2d(uL, gamma), n))
 
-mesh = TriMesh("./mesh/bump3.gri")
+mesh = TriMesh("./mesh/bump4.gri")
 mesh.info()
 mesh.verification()
 print(mesh.Bname)
