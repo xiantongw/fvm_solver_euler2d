@@ -37,7 +37,7 @@ double norm2d(double r[][4], int n){
         for (j = 0; j < 4; j++){
             row[j] = r[i][j];
         } 
-        sum = sum + norm1d(row, 4)*norm1d(row, 4);
+        sum = sum + norm1d(row, 4) * norm1d(row, 4);
     }
     return sqrt(sum);
 }

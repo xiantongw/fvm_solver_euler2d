@@ -38,6 +38,25 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
     double dtA[mparam->nelem];
     int i, j, ielem, icolumn;
 
+    /* Simualtion Information*/
+
+    printf("2D Euler Solver: Node-Centered Finite-Volume-Method\n");
+    printf("Numerical Flux: 2D Roe flux with an entropy fix\n");
+    printf("Order of Accuracy: %d\n", nstage);
+    printf("\n");
+    printf("Mesh Parameters:\n");
+    printf("Number of Elements: %d\n", mparam->nelem);
+    printf("Number of Interior Edges: %d\n", mparam->niedge);
+    printf("Number of Boundary Edges: %d\n", mparam->nbedge);
+    printf("\n");
+
+
+
+
+    printf("****************************************\n");
+    printf("           Simulation Start             \n");
+    printf("****************************************\n");
+
     /* Main Iteration*/
     for (niter=0; niter<MAXITER; niter++){
         
@@ -146,9 +165,7 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
         }
 
         // Print the simulation log
-        if ((niter + 1) % 10 == 0 || niter == 0){
-            printf("niter: %6d \t Res: %.18e \n", niter+1, norm2d(residual, mparam->nelem));
-        }
+        printf("niter: %6d \t Res: %.18e \n", niter+1, norm2d(residual, mparam->nelem));
 
         if (converge_flag){
             printf("Converged \n");
