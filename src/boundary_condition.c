@@ -3,9 +3,6 @@
 #include <math.h>
 #include <stdlib.h> 
 
-#include "flux.c"
-#include "struct_definition.c"
-
 void boudary_condition(double u[4], double norm[2], char* boundary_type, CfdParam* cparam, double num_flux[4], double *mws){ 
 
     if (strcasecmp(boundary_type, "Inflow") == 0){
@@ -100,7 +97,15 @@ void boudary_condition(double u[4], double norm[2], char* boundary_type, CfdPara
     } else if (strcasecmp(boundary_type, "Free_Stream") == 0){
         
         double mws_temp;
-        roe_2d(u, u, norm, cparam->gamma, num_flux, &mws_temp);
+        double u_free[4];
+
+        u_free[0] = 1.0;
+        u_free[1] = cparam->mach_inf * cos(cparam->attack_angle);
+        u_free[2] = cparam->mach_inf * sin(cparam->attack_angle);
+        u_free[3] = 1 / (cparam->gamma * (cparam->gamma - 1)) + 
+                        0.5 * cparam->mach_inf * cparam->mach_inf;
+
+        roe_2d(u, u_free, norm, cparam->gamma, num_flux, &mws_temp);
         *mws = mws_temp;
     
     } else{
