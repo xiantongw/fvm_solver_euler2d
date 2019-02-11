@@ -64,8 +64,9 @@ void roe_2d(double uL[4], double uR[4], double n[2], double gamma, double F_hat[
   u_roe = v_roe_vec[0] * n[0] + v_roe_vec[1] * n[1];
   // calculate H_roe 
   H_roe = (sqrt(rhoL) * HL + sqrt(rhoR) * HR) / (sqrt(rhoL) + sqrt(rhoR));
+ 
   // velocity magnitude
-  q_roe = (sqrt(rhoL) * qL + sqrt(rhoR) * qR) / (sqrt(rhoL) + sqrt(rhoR));
+  q_roe = sqrt(v_roe_vec[0] * v_roe_vec[0] + v_roe_vec[1] * v_roe_vec[1]);
   // sound speed
   c_roe = sqrt((gamma - 1.0) * (H_roe - 0.5 * (v_roe_vec[0] * v_roe_vec[0] + v_roe_vec[1] * v_roe_vec[1])));
   // eigenvalues
@@ -76,13 +77,14 @@ void roe_2d(double uL[4], double uR[4], double n[2], double gamma, double F_hat[
 
   // entropy fix for lambda_1, lambda_2 and lambda_3
   double epsilon = 0.1 * c_roe;
-  for (int i = 0; i < 3; i++){
+  int i;
+  for (i = 0; i < 3; i++){
     if (lambda[i] < epsilon && lambda[i] > -epsilon){
       lambda[i] = 0.5 * (epsilon + lambda[i] * lambda[i] / epsilon);
     }
   }
   lambda_1 = lambda[0]; lambda_2 = lambda[1]; lambda_3 = lambda[2];
-  
+
   // calculate the delta quantities for roe flux
   drho = uR[0] - uL[0];
   drhoE = uR[3] - uL[3];
@@ -95,7 +97,7 @@ void roe_2d(double uL[4], double uR[4], double n[2], double gamma, double F_hat[
   G2 = -1.0 * u_roe * drho + (drhov_vec[0] * n[0] + drhov_vec[1] * n[1]);
   C1 = G1 * (s1 - fabs(lambda_3)) / pow(c_roe, 2) + G2 * s2 / c_roe;
   C2 = G1 * s2 / c_roe + (s1 - fabs(lambda_3)) * G2;
-  
+
   // Calculate the Roe flux
   flux_function_2d(uL, gamma, FL); 
   flux_function_2d(uR, gamma, FR);
@@ -112,4 +114,3 @@ void roe_2d(double uL[4], double uR[4], double n[2], double gamma, double F_hat[
   *mws = fabs(u_roe) + c_roe; 
 
 }
-

@@ -1,2 +1,6 @@
 mesh/__pycache__/*
 wrapper/__pycache__/*
+libs/euler_steady_solver.so
+libs/flux.so
+.vscode/*
+.DS_Store

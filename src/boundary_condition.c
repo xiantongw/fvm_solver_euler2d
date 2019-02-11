@@ -73,14 +73,14 @@ void boudary_condition(double u[4], double norm[2], char* boundary_type, CfdPara
         double p = (cparam->gamma - 1.0) * (u[3] - 0.5 * (u[1]*u[1] + u[2]*u[2]) / u[0]);
         double S = p / pow(u[0], cparam->gamma);
         double pb = cparam->p_inf;
-        double rhob = pow(pb / S, 1/cparam->gamma);
+        double rhob = pow(pb / S,  1.0 / cparam->gamma);
         double cb = sqrt(cparam->gamma * pb / rhob);
-
-        double un = (u[1] / u[0])*norm[0] * (u[2] / u[0])*norm[1];
+        double un = (u[1] / u[0]) * norm[0] + (u[2] / u[0]) * norm[1];
+        
         double c = sqrt(cparam->gamma * p / u[0]);
-        double J = un + 2.0 * c / (cparam->gamma - 1); // Riemann Invariant
+        double J = un + 2.0 * c / (cparam->gamma - 1.0); // Riemann Invariant
 
-        double ub_n = J - 2 * cb / (cparam->gamma - 1.0);
+        double ub_n = J - 2.0 * cb / (cparam->gamma - 1.0);
 
         /* Solve for vb*/
         double vb[2] = {0.0, 0.0};
@@ -90,13 +90,12 @@ void boudary_condition(double u[4], double norm[2], char* boundary_type, CfdPara
         double rhoEb = pb / (cparam->gamma - 1.0) + 0.5 * rhob * (vb[0] * vb[0] + vb[1] * vb[1]);
 
         double ub[4] = {rhob, rhob * vb[0], rhob * vb[1], rhoEb};
+        
         double F_b[4][2];
         flux_function_2d(ub, cparam->gamma, F_b);
         projection_2d(F_b, norm, num_flux); // num_flux is passed out
-
-        // printf("%f %f %f %f\n", num_flux[0], num_flux[1], num_flux[2], num_flux[3]);
-        // printf("%f %f %f %f\n", ub[0], ub[1], ub[2], ub[3]);
-        *mws = sqrt(pow(u[1] / u[0], 2) + pow(u[2] / u[0], 2)) + sqrt(cparam->gamma * p / u[0]);
+        
+        *mws = sqrt(pow(ub[1] / ub[0], 2) + pow(ub[2] / ub[0], 2)) + sqrt(cparam->gamma * pb / ub[0]);
 
     } else if (strcasecmp(boundary_type, "Free_Stream") == 0){
         

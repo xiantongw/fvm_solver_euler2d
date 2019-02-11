@@ -18,6 +18,7 @@ class TriMesh:
     In = None
     Bn = None
     Area = None
+    Centroid = None
     MeshName = None
     
     # methods
@@ -36,6 +37,7 @@ class TriMesh:
         self.In = self.cal_In()
         self.Bn = self.cal_Bn()
         self.Area = self.cal_Area()
+        self.Centroid = self.cal_Centroid()
         self.MeshName = filename
 
         
@@ -177,6 +179,17 @@ class TriMesh:
                                     + pC[0]*(pA[1] - pB[1])))
             A[iTriangle] = area
         return A  
+
+    def cal_Centroid(self):
+        import numpy as np
+        nelem = np.shape(self.E)[0]
+        C = np.zeros([nelem, 2])
+        for iTriangle in range(nelem):
+            pA = self.V[self.E[iTriangle, 0] - 1]
+            pB = self.V[self.E[iTriangle, 1] - 1]
+            pC = self.V[self.E[iTriangle, 2] - 1]
+            C[iTriangle, :] = (pA + pB + pC) / 3.0
+        return C 
     
     def verification(self):
         import numpy as np
