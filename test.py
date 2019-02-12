@@ -22,12 +22,12 @@ gamma = 1.4
 # print(c_roe_2d(uL, uL, n, gamma))
 # print(np.matmul(c_flux_function_2d(uL, gamma), n))
 
-mesh = TriMesh("./mesh/bump3.gri")
+mesh = TriMesh("./mesh/bump1.gri")
 
 
 param = {
  "cfl": 0.85,
- "mach_inf": 0.5,
+ "mach_inf": 0.55,
  "attack_angle": 0,
  "gamma": 1.4,
  "p_inf": 1.0,
@@ -37,7 +37,7 @@ param = {
  "bound3":"Inflow",
  "MAXITER": 100000,
  "eps": 1e-7,
- "nstage":2
+ "norder":2
 }
 
     
@@ -45,7 +45,7 @@ state_vectors = c_euler_solver_main(mesh, param)
 
 data = state_vectors[:, 0]
 
-fig, ax = plot_state(mesh, data, show_mesh=True,
+fig, ax = plot_state(mesh, data, show_mesh=False,
                      x_min=-1.5, x_max=1.5, y_min=0, y_max=0.8)
 
 fig.savefig("test.eps")

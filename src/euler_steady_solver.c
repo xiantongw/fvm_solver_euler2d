@@ -16,7 +16,7 @@
 #include "calculate_gradient.c"
 #include "calculate_residual.c"
 
-int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam, int nstage,
+int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam, int norder,
                         int E[][3], double V[][2], 
                         int I2E[][4], int B2E[][3],
                         double In[][2], double Bn[][2], double Area[], double Centroid[][2],
@@ -42,7 +42,7 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
 
     printf("2D Euler Solver: Node-Centered Finite-Volume-Method\n");
     printf("Numerical Flux: 2D Roe flux with an entropy fix\n");
-    printf("Order of Accuracy: %d\n", nstage);
+    printf("Order of Accuracy: %d\n", norder);
     printf("\n");
     printf("Mesh Parameters:\n");
     printf("Number of Elements: %d\n", mparam->nelem);
@@ -72,10 +72,10 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
         }
 
         /* Calculate residual*/
-        if (nstage == 1){
+        if (norder == 1){
             ;
         }
-        else if (nstage == 2){
+        else if (norder == 2){
             calculate_gradient(mparam, E, V, I2E, B2E, In, Bn, Area, state_vectors, gradu);
         }
         else {
@@ -83,12 +83,12 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
             abort();
         }
 
-        calculate_residual(cparam, mparam, bparam, nstage, E, V, I2E, B2E, In, Bn, Area, Centroid, gradu,
+        calculate_residual(cparam, mparam, bparam, norder, E, V, I2E, B2E, In, Bn, Area, Centroid, gradu,
                            state_vectors, residual, max_wave_speed_tally);
 
         /* Time Marching*/
         int converge_flag = 1; // set convergence flag to TRUE
-        if (nstage == 1){
+        if (norder == 1){
             double row[4];
             // Time step
             for (ielem = 0; ielem < mparam->nelem; ielem++){
@@ -108,7 +108,7 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
                 }
             }
         }
-        else if (nstage == 2){
+        else if (norder == 2){
 
             double row[4];
             double state_vectors_FE[mparam->nelem][4];
@@ -140,7 +140,7 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
             calculate_gradient(mparam, E, V, I2E, B2E, In, Bn, Area, state_vectors_FE, gradu_FE);
 
             // Re-calculate the residual
-            calculate_residual(cparam, mparam, bparam, nstage, E, V, I2E, B2E, In, Bn, Area, Centroid, gradu_FE,
+            calculate_residual(cparam, mparam, bparam, norder, E, V, I2E, B2E, In, Bn, Area, Centroid, gradu_FE,
                                 state_vectors_FE, residual_FE, tally_temp);
 
             for (ielem = 0; ielem < mparam->nelem; ielem++){

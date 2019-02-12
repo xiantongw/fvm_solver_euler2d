@@ -1,5 +1,5 @@
 void calculate_residual(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam, 
-                        int nstage, int E[][3], double V[][2], int I2E[][4], int B2E[][3],
+                        int norder, int E[][3], double V[][2], int I2E[][4], int B2E[][3],
                         double In[][2], double Bn[][2], double Area[], double Centroid[][2], double gradu[][4][2],
                         double state_vectors[][4], double residual[][4], double max_wave_speed_tally[]){
 
@@ -39,13 +39,13 @@ void calculate_residual(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bpar
 
         /* Collect numerical flux information*/
         
-        if (nstage == 1){
+        if (norder == 1){
             for (i = 0; i < 4; i++){
                 state_left[i] = state_vectors[index_left][i];
                 state_right[i] = state_vectors[index_right][i];
             }
         }
-        else if (nstage == 2){
+        else if (norder == 2){
 
             // edge middle point
             mid_point[0] = 0.5 * (V[index_pA][0] + V[index_pB][0]);
@@ -96,12 +96,12 @@ void calculate_residual(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bpar
         dl = sqrt(pow(V[index_pA][0] - V[index_pB][0], 2.0) + pow(V[index_pA][1] - V[index_pB][1], 2.0));
         
         /* Collect numerical flux information*/
-        if (nstage == 1){
+        if (norder == 1){
             for (i = 0; i < 4; i++){
                 state_left[i] = state_vectors[index_left][i];
             }
 
-        } else if (nstage == 2){
+        } else if (norder == 2){
 
             // edge middle point
             mid_point[0] = 0.5 * (V[index_pA][0] + V[index_pB][0]);

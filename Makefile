@@ -1,6 +1,6 @@
 LIBS_DIR = ./libs
 SRC_DIR = ./src
-CC = gcc
+CC = icc
 
 build_libs:
 	@if([ ! -d "${LIBS_DIR}" ]); then mkdir "${LIBS_DIR}"; fi;
@@ -10,6 +10,8 @@ build_libs:
 clean:
 	rm -f "${LIBS_DIR}/flux.so"
 	rm -f "${LIBS_DIR}/euler_steady_solver.so"
+	rm -rf "./wrapper/__pycache__"
+	rm -rf "./mesh/__pycache__"
 
 clean~:
 	rm -rf *~
