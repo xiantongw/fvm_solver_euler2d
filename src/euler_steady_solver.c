@@ -147,7 +147,6 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
                 for (j = 0; j < 4; j++){
                     row[j] = residual[ielem][j];
                 }
-                // printf("%e\n", norm1d(row, 4));
                 if (norm1d(row, 4) > eps){
                     converge_flag = 0;
                     // Time marching on this local element          
