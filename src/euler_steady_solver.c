@@ -164,7 +164,7 @@ int euler_solver_main(CfdParam* cparam, MeshParam* mparam, BoundaryParam* bparam
         }
 
         // Print the simulation log
-        printf("niter: %6d \t Res: %.18e \n", niter+1, norm2d(residual, mparam->nelem));
+        printf("niter: %d Res: %.18e \n", niter+1, norm2d(residual, mparam->nelem));
 
         if (converge_flag){
             printf("Converged \n");

@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
     
-def plot_state(mesh, data, show_mesh=True,
+def plot_state(mesh, data, show_mesh=False,
                x_min=-1.5, x_max=1.5, y_min=0, y_max=0.8,
-               cmap='jet', title='Param_title',
+               cmap='viridis', title='Param_title',
                xlabel='Param_xlabel', ylabel='Param_ylabel',
                cbar_title='Param_cbar_title'):
 

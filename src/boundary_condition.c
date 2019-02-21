@@ -29,7 +29,6 @@ void boudary_condition(double u[4], double norm[2], char* boundary_type, CfdPara
             Mb = Mb2;
         else
             Mb = Mb1;
-
         // Calculate the exterior states
         double Tb = Tt / (1.0 + 0.5*(cparam->gamma - 1.0) * Mb * Mb);
         double pb = pt * pow(Tb / Tt, cparam->gamma / (cparam->gamma - 1.0));
@@ -37,7 +36,6 @@ void boudary_condition(double u[4], double norm[2], char* boundary_type, CfdPara
         double cb = sqrt(cparam->gamma * pb / rhob);
         double vb[2] = {Mb * cb * cos(cparam->attack_angle), Mb * cb * sin(cparam->attack_angle)};
         double rhoEb = pb / (cparam->gamma - 1.0) + 0.5 * rhob * (vb[0] * vb[0] + vb[1] * vb[1]);
-
 
         double ub[4] = {rhob, rhob * vb[0], rhob * vb[1], rhoEb};
         double F_b[4][2];
