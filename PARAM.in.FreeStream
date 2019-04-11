@@ -1,0 +1,16 @@
+gamma         1.40
+attack_angle  0.0
+cfl           0.4
+mach_inf      0.5
+p_inf         1.0
+T_inf         1.0
+R             1.0
+bound0        Free_Stream
+bound1        Free_Stream
+bound2        Free_Stream
+bound3        Free_Stream
+mesh_file     ./mesh/bump0.gri
+order         2
+eps           1e-20
+MAXITER       1000
+dnOutput      1

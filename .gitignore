@@ -1,6 +1,22 @@
-mesh/__pycache__/*
-wrapper/__pycache__/*
-libs/euler_steady_solver.so
-libs/flux.so
+.vs/*
 .vscode/*
 .DS_Store
+.idea
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+CMakeSettings.json
+
+*.exe
+*.cbp
+*.exe.manifest

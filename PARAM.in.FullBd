@@ -1,0 +1,16 @@
+gamma         1.40
+attack_angle  0.0
+cfl           0.85
+mach_inf      0.6
+p_inf         1.0
+T_inf         1.0
+R             1.0
+bound0        Inviscid_Wall
+bound1        Subsonic_Outflow
+bound2        Inviscid_Wall
+bound3        Inflow
+mesh_file     ./mesh/bump0.gri
+order         2
+eps           1e-7
+MAXITER       10000
+dnOutput      1
