@@ -20,13 +20,14 @@ typedef struct Param{
     double eps;
     double h;
     int dnOutput;
+    int dnSaveRestart;
     int MAXITER;
     std::string bound0;
     std::string bound1;
     std::string bound2;
     std::string bound3;
     std::string mesh_file;
-    int order;
+    std::string name_limiter;
 } Param;
 
 #endif

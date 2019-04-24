@@ -13,7 +13,8 @@
 #include "../include/CalcResidual.h"
 #include "../include/TriMesh.h"
 #include "../include/Param.h"
+#include "../include/CalcLimiter.h"
 
-int MainSolver(TriMesh mesh, Param param, vector<vector<double> > state_vectors);
+int MainSolver(TriMesh mesh, Param param, vector<vector<double> >& state_vectors);
 
 #endif //MAINSOLVER_H

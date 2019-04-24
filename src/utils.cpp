@@ -110,4 +110,62 @@ namespace utils
     }
     template double norm_inf(std::vector<std::vector<double> > vector_2d);
 
+    std::vector<std::vector<double> > Invert22Matrix(std::vector<std::vector<double> > mat_input)
+    {
+        double a, b, c, d;
+        std::vector<std::vector<double> > mat_inversed(2, std::vector<double>(2, 0.0));
+        a = mat_input[0][0]; b = mat_input[0][1];
+        c = mat_input[1][0]; d = mat_input[1][1];
+        double det = a * d - b * c;
+        mat_inversed[0][0] = d / det;
+        mat_inversed[0][1] = -b / det;
+        mat_inversed[1][0] = -c / det;
+        mat_inversed[1][1] = a /det;
+        return mat_inversed;
+    }
+
+    std::vector<std::vector<double> > Trans22Matrix(std::vector<std::vector<double> > mat_input)
+    {
+        double a, b, c, d;
+        std::vector<std::vector<double> > mat_trans(2, std::vector<double>(2, 0.0));
+        a = mat_input[0][0]; b = mat_input[0][1];
+        c = mat_input[1][0]; d = mat_input[1][1];
+        mat_trans[0][0] = a;
+        mat_trans[0][1] = c;
+        mat_trans[1][0] = b;
+        mat_trans[1][1] = d;
+        return mat_trans;
+    }
+
+    double max(double x, double y)
+    {
+        if (x >= y)
+            return x;
+        else
+            return y;
+    }
+
+    double min(double x, double y)
+    {
+        if (x >= y)
+            return y;
+        else
+            return x;
+    }
+
+    void SaveState(std::vector<std::vector<double> > state_vectors)
+    {
+        ofstream file_states;
+        file_states.open("states.dat");
+        for (int ielem = 0; ielem < state_vectors.size(); ++ielem)
+        {
+            for (int istate = 0; istate < 4; istate++)
+            {
+                file_states << state_vectors[ielem][istate] << " ";
+            }
+            file_states << endl;
+        }
+        file_states.close();
+    }
+
 } // namespace utils

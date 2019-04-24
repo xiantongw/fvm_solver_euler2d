@@ -49,9 +49,6 @@ Param ReadParamIn(string param_filename)
         }else if (strcasecmp(param_name.c_str(), "mesh_file") == 0)
         {
             param.mesh_file = param_value;
-        }else if (strcasecmp(param_name.c_str(), "order") == 0)
-        {
-            param.order = int(atof(param_value.c_str()));
         }else if (strcasecmp(param_name.c_str(), "eps") == 0)
         {
             param.eps = atof(param_value.c_str());
@@ -68,6 +65,12 @@ Param ReadParamIn(string param_filename)
         }else if (strcasecmp(param_name.c_str(), "dnOutput") == 0)
         {
             param.dnOutput = int(atof(param_value.c_str()));
+        }else if (strcasecmp(param_name.c_str(), "limiter") == 0)
+        {
+            param.name_limiter = param_value;
+        }else if (strcasecmp(param_name.c_str(), "dnSaveRestart") == 0)
+        {
+            param.dnSaveRestart = int(atof(param_value.c_str()));
         }
     }
     param_file.close();

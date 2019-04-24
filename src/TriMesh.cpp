@@ -12,6 +12,7 @@ TriMesh::TriMesh(string &gri_filename_in)
     CalcB2E();
     CalcIn();
     CalcBn();
+    FindNeighbour();
     FindCurvedIndex();
 }
 
@@ -39,6 +40,7 @@ TriMesh::TriMesh(TriMesh &mesh)
     LinearElementIndex = mesh.LinearElementIndex;
     LinearEdgeIndex = mesh.LinearEdgeIndex;
     curved_group = mesh.curved_group;
+    NeighbourElements = mesh.NeighbourElements;
 }
 
 void TriMesh::ReadGri(string &gri_filename)
@@ -369,6 +371,28 @@ void TriMesh::CalcCentroid()
         Centroid[i][1] = (yA + yB + yC) / 3.0;
     }
     this->Centroid = Centroid;
+}
+
+void TriMesh::FindNeighbour()
+{
+    vector<vector<int> > NeighbourElements(this->num_element, vector<int> (3, -1));
+    vector<int> current_ind(this->num_element, 0);
+    for (int i = 0; i < this->I2E.size(); i++)
+    {
+        int elemL = this->I2E[i][0];
+        int elemR = this->I2E[i][2];
+        NeighbourElements[elemL - 1][current_ind[elemL - 1]] = elemR;
+        NeighbourElements[elemR - 1][current_ind[elemR - 1]] = elemL;
+        current_ind[elemL - 1]++;
+        current_ind[elemR - 1]++;
+    }
+    for (int i = 0; i < this->B2E.size(); i++)
+    {
+        int elemL = this->B2E[i][0];
+        NeighbourElements[elemL - 1][current_ind[elemL - 1]] = elemL;
+        current_ind[elemL - 1]++;
+    }
+    this->NeighbourElements = NeighbourElements;
 }
 
 void TriMesh::WriteGri(string& gri_filename)

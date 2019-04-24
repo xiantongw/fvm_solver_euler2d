@@ -8,8 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include <cstring>
-#include <strings.h>
+#include <string.h>
 
 #include "../include/Param.h"
 #include "../include/CalcNumericalFlux.h"

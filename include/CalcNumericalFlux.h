@@ -2,12 +2,17 @@
 // Created by Xiantong Wang on 2019-04-09.
 //
 
+
 #ifndef CALCNUMERICALFLUX_H
 #define CALCNUMERICALFLUX_H
 
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <string.h>
+
+// #define strncasecmp _strnicmp
+// #define strcasecmp _stricmp
 
 using namespace std;
 

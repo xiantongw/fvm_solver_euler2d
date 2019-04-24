@@ -14,7 +14,8 @@
 #include "Param.h"
 #include "TriMesh.h"
 
+
 vector<vector<double> > CalcResidual(TriMesh mesh, Param& param, vector<vector<vector<double> > > gradu,
-                                     vector<vector<double> > state_vectors, vector<double>& dtA);
+                                     vector<vector<double> > state_vectors, vector<vector<double> > limiter, vector<double>& dtA);
 
 #endif //CALCRESIDUAL_H

@@ -1,9 +1,13 @@
 #include <iostream>
+#include <fstream>
+#include <algorithm>
 #include "../include/TriMesh.h"
 #include "../include/CalcNumericalFlux.h"
 #include "../include/CalcGradient.h"
 #include "../include/Collective.h"
 #include "../include/MainSolver.h"
+#include "../include/CalcLimiter.h"
+#include "../include/CalcResidual.h"
 
 using namespace std;
 
@@ -11,8 +15,8 @@ int main(int argc, char* argv[])
 {
     Param param;
     // Set up the param struct
-    param = ReadParamIn(string(argv[1]));
-    TriMesh mesh(param.mesh_file);
+	param = ReadParamIn(string(argv[1]));
+	TriMesh mesh(param.mesh_file);
 
     /*Initialize state vectors*/
     vector<vector<double> > state_vectors(mesh.E.size(), vector<double> (4, 0.0));
@@ -34,6 +38,8 @@ int main(int argc, char* argv[])
 
     int converged;
     converged = MainSolver(mesh, param, state_vectors);
+
+    utils::SaveState(state_vectors);
 
     return 0;
 

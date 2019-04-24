@@ -11,7 +11,6 @@ import sys
 sys.path.append("./wrapper")
 sys.path.append("./mesh")
 from TriMesh import TriMesh
-from wrapper_calculate_gradient import c_calculate_gradient
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -41,8 +40,6 @@ def postproc(mesh, param, u):
     intg2 = 0.0
     cp = [] # pressure coefficient
     mach = [] # mach number
-    if norder == 2:
-        gradu = c_calculate_gradient(mesh, param, u)
     
     for i in range(len(ind_bottom)):
         # calculate the dl of the bottom cell
@@ -53,14 +50,7 @@ def postproc(mesh, param, u):
         if norder == 1:
             # first order scheme, using pressure at the cell center
             ul = u[ind_bottom_cells[i], :]
-        
-        if norder == 2:
-            # second order scheme, interpolate the state to the edge
-            u_in = u[ind_bottom_cells[i], :]
-            cen_point = mesh.Centroid[ind_bottom_cells[i], :]
-            dx = mid_point - cen_point
-            ul = u_in + np.matmul(gradu[ind_bottom_cells[i], :], dx)
-                            
+            
         pl = (gamma - 1.0) * (ul[3] - 0.5 * (ul[1]*ul[1] +
                      ul[2]*ul[2]) / ul[0])
         c = np.sqrt(gamma * pl / ul[0])
@@ -80,3 +70,26 @@ def postproc(mesh, param, u):
     mach = mach[mach[:, 0].argsort()]
     
     return cl, cd, cp, Es, mach
+
+param = {
+ "cfl": 0.85,
+ "mach_inf": 0.85,
+ "attack_angle": 0,
+ "gamma": 1.4,
+ "p_inf": 1.0,
+ "bound0":"Inviscid_Wall",
+ "bound1":"Subsonic_Outflow",
+ "bound2":"Inviscid_Wall",
+ "bound3":"Inflow",
+ "MAXITER": 100000,
+ "eps": 1e-7,
+ "norder":1
+}
+
+
+mesh_name = 'bump0'
+name_var = 'mach'
+mesh = TriMesh("./mesh/{:s}.gri".format(mesh_name))
+u = np.loadtxt("./build/states_m0.85_{:s}.dat".format(mesh_name))
+cl, cd, cp, Es, mach = postproc(mesh, param, u)
+plt.plot(cp[:,0], -cp[:,1],'.-')

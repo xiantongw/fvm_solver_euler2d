@@ -7,7 +7,7 @@
 using namespace std;
 
 vector<vector<double> > CalcResidual(TriMesh mesh, Param& param, vector<vector<vector<double> > > gradu,
-                        vector<vector<double> > state_vectors, vector<double>& dtA){
+                        vector<vector<double> > state_vectors, vector<vector<double> > limiter, vector<double>& dtA){
 
     /* Local Vars*/
     int iedge, i, ielem, index_left, index_right, index_pA, index_pB;
@@ -15,22 +15,19 @@ vector<vector<double> > CalcResidual(TriMesh mesh, Param& param, vector<vector<v
     vector<double> state_left(4, 0.0), state_right(4, 0.0);
     int index_edge_nodes[2];
     double dl;
-    double mws;
+    double mws = 0.0;
     vector<double> num_flux(4, 0.0);
     double mid_point[2];
     vector<vector<double> > residual(mesh.E.size(), vector<double>(4, 0.0));
     vector<double> max_wave_speed_tally(mesh.E.size(), 0.0);
 
-    /* Initialize the residual and tally to 0.0*/
-    for (ielem = 0; ielem < mesh.E.size(); ielem++){
-        max_wave_speed_tally[ielem] = 0.0;
-        for (i = 0; i < 4; i++){
-            residual[ielem][i] = 0.0;
-        }
-    }
+    int num_elem = mesh.E.size();
+    int num_iedge = mesh.I2E.size();
+    int num_bedge = mesh.B2E.size();
 
     /* Loop through interior edges*/
-    for (iedge = 0; iedge < mesh.I2E.size(); iedge++){
+    for (iedge = 0; iedge < num_iedge; iedge++)
+    {
 
         norm_vector[0] = mesh.In[iedge][0];
         norm_vector[1] = mesh.In[iedge][1];
@@ -47,39 +44,30 @@ vector<vector<double> > CalcResidual(TriMesh mesh, Param& param, vector<vector<v
 
         /* Collect numerical flux information*/
 
-        if (param.order == 1){
-            state_left = state_vectors[index_left];
-            state_right = state_vectors[index_right];
+        // edge middle point
+        mid_point[0] = 0.5 * (mesh.V[index_pA][0] + mesh.V[index_pB][0]);
+        mid_point[1] = 0.5 * (mesh.V[index_pA][1] + mesh.V[index_pB][1]);
+
+        // get left state
+        for (i = 0; i < 4; i++)
+        {
+            state_left[i] = state_vectors[index_left][i] +
+                            (gradu[index_left][i][0] * limiter[index_left][0] * (mid_point[0] - mesh.Centroid[index_left][0]) +
+                             gradu[index_left][i][1] * limiter[index_left][1] * (mid_point[1] - mesh.Centroid[index_left][1]));
         }
-        else if (param.order == 2){
 
-            // edge middle point
-            mid_point[0] = 0.5 * (mesh.V[index_pA][0] + mesh.V[index_pB][0]);
-            mid_point[1] = 0.5 * (mesh.V[index_pA][1] + mesh.V[index_pB][1]);
-
-            // get left state
-            for (i = 0; i < 4; i++){
-                state_left[i] = state_vectors[index_left][i] +
-                                (gradu[index_left][i][0] * (mid_point[0] - mesh.Centroid[index_left][0]) +
-                                 gradu[index_left][i][1] * (mid_point[1] - mesh.Centroid[index_left][1]));
-            }
-
-            // get right state
-            for (i = 0; i < 4; i++){
-                state_right[i] = state_vectors[index_right][i] +
-                                 (gradu[index_right][i][0] * (mid_point[0] - mesh.Centroid[index_right][0]) +
-                                  gradu[index_right][i][1] * (mid_point[1] - mesh.Centroid[index_right][1]));
-            }
-
-        }
-        else {
-            printf("Unsupported order of accuracy!\n");
-            abort();
+        // get right state
+        for (i = 0; i < 4; i++)
+        {
+            state_right[i] = state_vectors[index_right][i] +
+                             (gradu[index_right][i][0] * limiter[index_right][0] * (mid_point[0] - mesh.Centroid[index_right][0]) +
+                              gradu[index_right][i][1] * limiter[index_right][1] * (mid_point[1] - mesh.Centroid[index_right][1]));
         }
 
         num_flux = CalcNumericalFlux(state_left, state_right, norm_vector, "roe", param.gamma, mws);
 
-        for (i = 0; i < 4; i++){
+        for (i = 0; i < 4; i++)
+        {
             residual[index_left][i] += num_flux[i] * dl;
             residual[index_right][i] -= num_flux[i] * dl;
         }
@@ -88,7 +76,8 @@ vector<vector<double> > CalcResidual(TriMesh mesh, Param& param, vector<vector<v
     }
 
     /* Loop through boundary edges*/
-    for (iedge = 0; iedge < mesh.B2E.size(); iedge++){
+    for (iedge = 0; iedge < num_bedge; iedge++)
+    {
 
         norm_vector[0] = mesh.Bn[iedge][0];
         norm_vector[1] = mesh.Bn[iedge][1];
@@ -103,24 +92,17 @@ vector<vector<double> > CalcResidual(TriMesh mesh, Param& param, vector<vector<v
         index_pB = mesh.E[index_left][index_edge_nodes[1]] - 1;
 
         /* Collect numerical flux information*/
-        if (param.order == 1) {
-            state_left = state_vectors[index_left];
-        }else if (param.order == 2){
 
-            // edge middle point
-            mid_point[0] = 0.5 * (mesh.V[index_pA][0] + mesh.V[index_pB][0]);
-            mid_point[1] = 0.5 * (mesh.V[index_pA][1] + mesh.V[index_pB][1]);
+        // edge middle point
+        mid_point[0] = 0.5 * (mesh.V[index_pA][0] + mesh.V[index_pB][0]);
+        mid_point[1] = 0.5 * (mesh.V[index_pA][1] + mesh.V[index_pB][1]);
 
-            // get left state
-            for (i = 0; i < 4; i++){
-                state_left[i] = state_vectors[index_left][i] + \
-                                (gradu[index_left][i][0] * (mid_point[0] - mesh.Centroid[index_left][0]) + \
-                                 gradu[index_left][i][1] * (mid_point[1] - mesh.Centroid[index_left][1]));
-            }
-        }
-        else {
-            printf("Unsupported order of accuracy!\n");
-            abort();
+        // get left state
+        for (i = 0; i < 4; i++)
+        {
+            state_left[i] = state_vectors[index_left][i] + \
+                            (gradu[index_left][i][0] * limiter[index_left][0] * (mid_point[0] - mesh.Centroid[index_left][0]) + \
+                             gradu[index_left][i][1] * limiter[index_left][1] * (mid_point[1] - mesh.Centroid[index_left][1]));
         }
 
         /* Get the state vector outside*/
@@ -139,13 +121,14 @@ vector<vector<double> > CalcResidual(TriMesh mesh, Param& param, vector<vector<v
                 num_flux = ApplyBoundaryCondition(state_left, norm_vector, param.bound3, param, mws);
                 break;
         }
-        for (i = 0; i < 4; i++){
+        for (i = 0; i < 4; i++)
+        {
             residual[index_left][i] += num_flux[i] * dl;
         }
         max_wave_speed_tally[index_left] += mws * dl;
     }
     // Calculate dt/A
-    for (ielem = 0; ielem < mesh.E.size(); ielem++)
+    for (ielem = 0; ielem < num_elem; ielem++)
     {
         dtA[ielem] = 2.0 * param.cfl / max_wave_speed_tally[ielem];
     }

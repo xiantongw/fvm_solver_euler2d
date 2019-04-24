@@ -32,6 +32,7 @@ class TriMesh
     vector<vector<int> > B2E;
     vector<vector<double> > In;
     vector<vector<double> > Bn;
+    vector<vector<int> > NeighbourElements;
     vector<bool> isCurved;
     vector<int> CurvedElementIndex;
     vector<int> LinearElementIndex;
@@ -47,6 +48,7 @@ class TriMesh
     void CalcBn();
     void CalcArea();
     void CalcCentroid();
+    void FindNeighbour();
     void FindCurvedIndex();
     void WriteGri(string &gri_filename);
 

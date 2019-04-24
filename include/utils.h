@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <fstream>
 
 #include "./TriMesh.h"
 
@@ -27,6 +28,16 @@ namespace utils
 
     template <typename T>
     T norm_inf(std::vector<std::vector<T> > vector_2d);
+
+    std::vector<std::vector<double> > Invert22Matrix(std::vector<std::vector<double> > mat_input);
+
+    std::vector<std::vector<double> > Trans22Matrix(std::vector<std::vector<double> > mat_input);
+
+    double max(double x, double y);
+    double min(double x, double y);
+
+    void SaveState(std::vector<std::vector<double> > state_vectors);
+
 }
 
 #endif
