@@ -20,3 +20,5 @@ CMakeSettings.json
 *.exe
 *.cbp
 *.exe.manifest
+build*/
+PARAM.in
